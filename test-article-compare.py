@@ -3,9 +3,12 @@
 海量文章查重脚本，
 powered by guanrongjia
 海量比对文章的相似度！
-这个算法对完全摘抄的文章，查询相似度，还是比较准的，大于10 的(精度可以根据自己需要，一半设置为3，那是非常精确了)，为不相似，否则为极度相似。
-但是对于那种只摘抄了一部分的，相似度查询，很差，因为这里有一个问题，是先从文章中找出n个关键词(本文设置了100)，根据关键词来进行比对的。
-如果要根据段落来，甚至是句子来，也可以，但是工作量就比较大了，你可以把 每一句话都存一个simhash。
+这个算法对文字量比较大的文章，查询相似度，还是比较准的，
+大于10 的(精度可以根据自己需要，一半设置为3，那是非常精确了)，为不相似，否则为极度相似。
+
+但是对于那种只摘抄了一部分的，相似度查询，很差
+如果要根据段落来，甚至是句子来，也可以，但是工作量就比较大了，
+你可以把 每一句话都存一个simhash。
 '''
 import jieba
 import jieba.analyse
@@ -21,11 +24,10 @@ def calc_simhash(content):
 
     # 结巴分词
     seg = jieba.cut(content)
-    # seg = re.split(u"，|。|；|！|？", content)
     # 设置结巴的stopwords， 就是不需要进行处理或者是不重要的 string
     jieba.analyse.set_stop_words('./stopwords.txt')
     # 使用 extract 算法，计算出关键词和 关键词得分（权重）
-    keyWord = jieba.analyse.extract_tags('|'.join(seg), topK=100, withWeight=True, allowPOS=())
+    keyWord = jieba.analyse.extract_tags('|'.join(seg), topK=25, withWeight=True, allowPOS=())
     keyList = []
     for feature, weight in keyWord:
         weight = int(weight * 100)
@@ -54,26 +56,22 @@ def calc_simhash(content):
     return simhash
 
 
-def string_hash(source):
-    '''
-    计算中文关键词的 hash，并转化成1和0
-    :param source:
-    :return:
-    '''
+def string_hash(source):  # 局部哈希算法的实现
     if source == "":
         return 0
     else:
+        # ord()函数 return 字符的Unicode数值
         x = ord(source[0]) << 7
-        m = 1000003
-        mask = 2 ** 128 - 1
-        for c in source:
+        m = 1000003  # 设置一个大的素数
+        mask = 2 ** 128 - 1  # key值
+        for c in source:  # 对每一个字符基于前面计算hash
             x = ((x * m) ^ ord(c)) & mask
-        x ^= len(source)
-        if x == -1:
+
+        x ^= len(source)  #
+        if x == -1:  # 证明超过精度
             x = -2
         x = bin(x).replace('0b', '').zfill(64)[-64:]
-        return str(x)
-
+    return str(x)
 
 def hamming_dis(simhash1, simhash2):
     '''
@@ -107,5 +105,5 @@ if __name__ == '__main__':
     # 计算最终差异度
     diff_value =  hamming_dis(simhash_1, simhash_2)
     print u'差异值：  %s' % (diff_value)
-    if diff_value > 8:
-        print u'差异值：  %s' % (diff_value)
+    # if diff_value > 8:
+    #     print u'差异值：  %s' % (diff_value)
