@@ -8,7 +8,12 @@ powered by guanrongjia
 
 但是对于那种只摘抄了一部分的，相似度查询，很差
 如果要根据段落来，甚至是句子来，也可以，但是工作量就比较大了，
-你可以把 每一句话都存一个simhash。
+你可以把 每一句话都存一个simhash。.
+
+
+此文本为初始版本，最新版本，使用 test-article-compare2.py
+内含多个不同的比对方式，可以直接运行demo 看结果
+
 '''
 import jieba
 import jieba.analyse
