@@ -86,4 +86,5 @@ print result
 稀疏矩阵相似度，从而建立索引 
 得到最终相似度结果
 
+参靠文档：https://blog.csdn.net/xiexf189/article/details/79092629
 '''
