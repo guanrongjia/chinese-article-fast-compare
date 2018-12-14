@@ -23,7 +23,7 @@ def countIDF(text, topK, split_words_mode):
     return 词频vector
     '''
     # 结巴分词
-    seg = jieba.cut(text)
+    seg = pseg.cut(text)
     # 设置结巴的stopwords， 就是不需要进行处理或者是不重要的 string
     jieba.analyse.set_stop_words('./stopwords.txt')
     # 使用 extract 算法，计算出关键词和 关键词得分（权重）
