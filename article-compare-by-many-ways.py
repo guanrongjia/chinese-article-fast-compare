@@ -164,12 +164,12 @@ class TextSimilarity(object):
         # 结巴分词
         seg = jieba.cut(content)
         # 设置结巴的stopwords， 就是不需要进行处理或者是不重要的 string
-        jieba.analyse.set_stop_words('./stopwords.txt')
+        jieba.analyse.set_stop_words('./src/stopwords.txt')
         # 使用  TF-IDF / TextRank  算法，           计算出关键词和 关键词得分（权重）
         if split_words_mode == 'TF-IDF':
             keyWord = jieba.analyse.extract_tags('|'.join(seg), topK=25, withWeight=True, allowPOS=())
         elif split_words_mode == 'TextRank':
-            keyWord = jieba.analyse.textrank('|'.join(seg), topK=25, withWeight=True, allowPOS=('ns', 'n', 'vn', 'v'))
+            keyWord = jieba.analyse.textrank('|'.join(seg), topK=25, withWeight=True, allowPOS=())
         else:
             raise Exception
         keyList = []

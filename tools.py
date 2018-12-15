@@ -25,12 +25,12 @@ def countIDF(text, topK, split_words_mode):
     # 结巴分词
     seg = pseg.cut(text)
     # 设置结巴的stopwords， 就是不需要进行处理或者是不重要的 string
-    jieba.analyse.set_stop_words('./stopwords.txt')
+    jieba.analyse.set_stop_words('./src/stopwords.txt')
     # 使用 extract 算法，计算出关键词和 关键词得分（权重）
     if split_words_mode == 'TF-IDF':
         keyWord = jieba.analyse.extract_tags('|'.join(seg), topK=topK, withWeight=True, allowPOS=())
     elif split_words_mode == 'TextRank':
-        keyWord = jieba.analyse.textrank('|'.join(seg), topK=topK, withWeight=True, allowPOS=('ns', 'n', 'vn', 'v'))
+        keyWord = jieba.analyse.textrank('|'.join(seg), topK=topK, withWeight=True, allowPOS=())
     else:
         raise Exception
     return [int(one[1] * 20) for one in keyWord]
