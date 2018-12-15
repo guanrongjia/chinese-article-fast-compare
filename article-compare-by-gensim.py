@@ -9,75 +9,30 @@ https://zhuanlan.zhihu.com/p/37175253
 '''
 import jieba.analyse
 from gensim import corpora, models, similarities
-
-jieba.analyse.set_stop_words('./stopwords.txt')
-
-
-
-def gansim_learning():
-    '''
-    gansim 入门学习，使用例子，来更好地理解，gansim的使用方法
-    参考文档：https://zhuanlan.zhihu.com/p/37175253
-    :return:
-    '''
-    # 第一步，获取文档的关键字，这一组关键字就用来表示这个文档
-    # ps: 我们需要先对原始的文本进行分词、去除停用词等操作，得到每一篇文档的特征列表。例如，在词袋模型中，文档的特征就是其包含的word
-    texts = [['human', 'interface', 'computer'],
-             ['survey', 'user', 'computer', 'system', 'response', 'time'],
-             ['eps', 'user', 'interface', 'system'],
-             ['system', 'human', 'system', 'eps'],
-             ['user', 'response', 'time'],
-             ['trees'],
-             ['graph', 'trees'],
-             ['graph', 'minors', 'trees'],
-             ['graph', 'minors', 'survey']]
-
-    # 调用Gensim提供的API建立语料特征（此处即是word）的索引字典
-    dictionary = corpora.Dictionary(texts)
-    corpus = [dictionary.doc2bow(text) for text in texts]
-    print corpus[0]  # [(0, 1), (1, 1), (2, 1)]
-
-
-
-
-
-
-
-
+jieba.analyse.set_stop_words('./src/stopwords.txt')
 
 def gansim_demo():
     '''
     下面是一个具体的，使用gansim进行文本比对，相似度计算的例子
     :return:
     '''
-    # 以下doc0-doc7是几个最简单的文档，我们可以称之为目标文档，本文就是分析doc_test（测试文档）与以上8个文档的相似度。
-    doc0 = "我不喜欢上海"
-    doc1 = "上海是一个好地方"
-    doc2 = "北京是一个好地方"
-    doc3 = "上海好吃的在哪里"
-    doc4 = "上海好玩的在哪里"
-    doc5 = "上海是好地方"
-    doc6 = "上海路和上海人"
-    doc7 = "喜欢小吃"
+    # 以下是几个最简单的文档，我们可以称之为目标文档，
+    # 本文就是分析doc_test（测试文档）与以上8个文档的相似度。
+    all_doc = ["我不喜欢上海",
+     "上海是一个好地方",
+     "北京是一个好地方",
+     "上海好吃的在哪里",
+     "上海好玩的在哪里",
+     "上海是好地方",
+     "上海路和上海人",
+     "喜欢小吃"]
     doc_test="我喜欢上海的小吃"
-
-    # 首先，为了简化操作，把目标文档放到一个列表all_doc中。
-    all_doc = []
-    all_doc.append(doc0)
-    all_doc.append(doc1)
-    all_doc.append(doc2)
-    all_doc.append(doc3)
-    all_doc.append(doc4)
-    all_doc.append(doc5)
-    all_doc.append(doc6)
-    all_doc.append(doc7)
 
     # 以下对目标文档进行分词，并且保存在列表all_doc_list中
     all_doc_list = []
     for doc in all_doc:
         words = jieba.cut(doc)
-
-        doc_list = [word for word in jieba.cut(doc)]
+        doc_list = [word for word in words]
         all_doc_list.append(doc_list)
 
     # 以下把测试文档也进行分词，并保存在列表doc_test_list中
@@ -87,14 +42,10 @@ def gansim_demo():
     ###############################制作语料库############################
     # 首先用dictionary方法获取词袋（bag-of-words)
     dictionary = corpora.Dictionary(all_doc_list)
-    # 词袋中用数字对所有词进行了编号
-    dictionary.keys()
     # 以下使用doc2bow制作语料库
     corpus = [dictionary.doc2bow(doc) for doc in all_doc_list]
-
     # 以下用同样的方法，把测试文档也转换为二元组的向量
     doc_test_vec = dictionary.doc2bow(doc_test_list)
-
 
     ############################相似度分析################################
     # 使用TF-IDF模型对语料库建模
@@ -102,7 +53,7 @@ def gansim_demo():
     # 获取测试文档中，每个词的TF-IDF值
 
     # 对每个目标文档，分析测试文档的相似度
-    index = similarities.SparseMatrixSimilarity(tfidf[corpus], num_features=len(dictionary.keys()))
+    index = similarities.SparseMatrixSimilarity(tfidf[corpus])
     sim = index[tfidf[doc_test_vec]]
 
     # 根据相似度排序
@@ -131,3 +82,8 @@ def gansim_demo():
     
     参考文档：https://blog.csdn.net/xiexf189/article/details/79092629
     '''
+
+
+
+if __name__  == '__main__':
+    gansim_demo()
